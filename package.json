@@ -1,6 +1,6 @@
 {
   "name": "@ducat-unit/runestone",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Fork of the Magic Eden runestone library.",
   "repository": {
     "type": "git",
