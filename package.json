@@ -1,7 +1,7 @@
 {
-  "name": "@magiceden-oss/runestone-lib",
-  "version": "1.0.2",
-  "description": "",
+  "name": "@ducat-unit/runestone",
+  "version": "1.0.3",
+  "description": "Fork of the Magic Eden runestone library.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
