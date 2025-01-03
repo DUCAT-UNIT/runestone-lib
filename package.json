@@ -2,18 +2,34 @@
   "name": "@ducat-unit/runestone",
   "version": "1.0.3",
   "description": "Fork of the Magic Eden runestone library.",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DUCAT-UNIT/runestone-lib"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
+  "unpkg": "./dist/script.js",
+  "files": [
+    "README.md",
+    "LICENSE",
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
     "test": "jest",
     "build": "tsc -p tsconfig.json",
     "start": "node index.js"
   },
-  "files": [
-    "dist",
-    "src",
-    "index.ts"
-  ],
   "keywords": [],
   "author": "",
   "license": "ISC",
