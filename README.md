@@ -1,18 +1,16 @@
-# runestone-lib
+# @ducat-unit/runestone
 
-This is a Typescript implementation of the Bitcoin Runestone protocol.
-To see the original version, please go to the [Ordinals repo](https://github.com/ordinals/ord);
-you can find various [data structures](https://github.com/ordinals/ord/tree/master/crates/ordinals/src) and
-[indexer implementation](https://github.com/ordinals/ord/blob/master/src/index/updater/rune_updater.rs) there.
-General documentation of the runes protocol and how runestones are used can be found
-[here](https://docs.ordinals.com/runes.html).
+TypeScript implementation of the Bitcoin Runestone protocol used by DUCAT packages.
+
+This package intentionally focuses on runestone encoding/decoding primitives consumed by
+`core-ts`, `bootstrap-ts`, and `validator-ts`.
 
 ## Encode Runestone
 
 To encode a runestone, use `encodeRunestone()` method, with an example below:
 
 ```ts
-import { encodeRunestone } from '@magiceden-oss/runestone-lib';
+import { encodeRunestone } from '@ducat-unit/runestone';
 
 // To deploy a new rune ticker
 // (this will require a commitment in an input script)
@@ -67,7 +65,7 @@ import {
   isRunestone,
   RunestoneSpec,
   Cenotaph
-} from '@magiceden-oss/runestone-lib';
+} from '@ducat-unit/runestone';
 
 // transaction retrieved with getrawtransaction RPC call
 const tx = ...;
@@ -83,36 +81,9 @@ if (isRunestone(artifact)) {
 }
 ```
 
-## Indexing
+## Exported API
 
-To index, initialize a RunestoneIndexer, implement the interface arguments
-to RunestoneIndexer constructor. Then it is just a matter of start() to finish
-initializing the indexer, and then controlling the rate of syncing indexing
-to latest state in RPC server.
-
-```ts
-// Initialize indexer
-const indexer = new RunestoneIndexer(...);
-
-// Preps the indexer to be ready to run updateRuneUtxoBalances()
-await indexer.start()
-
-// Example of a polling job running updateRuneUtxoBalances()
-// every minute, with stop cleanup handling
-let stop = false;
-...
-
-const intervalId = setInterval(async () => {
-  try {
-    await indexer.updateRuneUtxoBalances();
-  } catch (err) {
-    console.error('Error occurred while indexing runes', err);
-  }
-
-  if (stop) {
-    clearInterval(intervalId);
-    await indexer.stop();
-  }
-}, 60 * 1000 /* one minute */);
-
-```
+- `encodeRunestone(runestone: RunestoneSpec)`
+- `tryDecodeRunestone(tx: RunestoneTx)`
+- `isRunestone(artifact)`
+- Types: `RunestoneSpec`, `Cenotaph`, `Flaw`

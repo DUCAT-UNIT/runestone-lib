@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { SeekBuffer } from '../src/seekbuffer';
 import { u128 } from '../src/integer/u128';
 
@@ -54,7 +53,9 @@ describe('u128 varint encoding', () => {
     expect(seekBuffer.isFinished()).toBe(true);
   });
 
-  it.each([_.range(0, 128)])('round trips powers of two successfully (2 ^ %i)', (powerOfTwo) => {
+  it.each([Array.from({ length: 128 }, (_, i) => i)])(
+    'round trips powers of two successfully (2 ^ %i)',
+    (powerOfTwo) => {
     const n = u128(1n << BigInt(powerOfTwo));
     const encoded = u128.encodeVarInt(n);
 
@@ -63,12 +64,13 @@ describe('u128 varint encoding', () => {
 
     expect(decoded).toBe(n);
     expect(seekBuffer.isFinished()).toBe(true);
-  });
+    }
+  );
 
   test('round trips alternating bit strings successfully', () => {
     let value = 0n;
 
-    for (const i in _.range(0, 129)) {
+    for (let i = 0; i < 129; i++) {
       value = (value << 1n) | value % 2n;
 
       const n = u128(value);

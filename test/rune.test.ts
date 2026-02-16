@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { U128_MAX_BIGINT, u128 } from '../src/integer/u128';
 import { Rune } from '../src/rune';
 import { Network } from '../src/network';
@@ -193,9 +192,6 @@ describe('rune', () => {
     testcase(256, [0, 1]);
     testcase(65535, [255, 255]);
     testcase(65536, [0, 0, 1]);
-    testcase(
-      u128.MAX,
-      _.range(16).map(() => 255)
-    );
+    testcase(u128.MAX, Array.from({ length: 16 }, () => 255));
   });
 });

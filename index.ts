@@ -1,7 +1,6 @@
 import { MAX_DIVISIBILITY } from './src/constants';
 import { Etching } from './src/etching';
 import { Flaw as FlawEnum } from './src/flaw';
-import { RuneEtchingSpec } from './src/indexer';
 import { u128, u32, u64, u8 } from './src/integer';
 import { None, Option, Some } from './src/monads';
 import { RuneId } from './src/runeid';
@@ -9,35 +8,25 @@ import { Runestone, RunestoneTx } from './src/runestone';
 import { SpacedRune } from './src/spacedrune';
 import { Terms } from './src/terms';
 
-export {
-  BlockIdentifier,
-  BlockInfo,
-  RuneBalance,
-  RuneBlockIndex,
-  RuneEtching,
-  RuneEtchingSpec,
-  RuneLocation,
-  RuneMintCount,
-  RuneSpentUtxoBalance,
-  RuneUpdater,
-  RuneUtxoBalance,
-  RunestoneIndexer,
-  RunestoneIndexerOptions,
-  RunestoneStorage,
-} from './src/indexer';
-
-export { Network } from './src/network';
-
-export {
-  BitcoinRpcClient,
-  GetBlockParams,
-  GetBlockReturn,
-  GetBlockhashParams,
-  GetRawTransactionParams,
-  GetRawTransactionReturn,
-  RpcResponse,
-  Tx,
-} from './src/rpcclient';
+export type RuneEtchingSpec = {
+  divisibility?: number;
+  premine?: bigint;
+  symbol?: string;
+  terms?: {
+    cap?: bigint;
+    amount?: bigint;
+    offset?: {
+      start?: bigint;
+      end?: bigint;
+    };
+    height?: {
+      start?: bigint;
+      end?: bigint;
+    };
+  };
+  turbo?: boolean;
+  runeName?: string;
+};
 
 export type RunestoneSpec = {
   mint?: {

@@ -1,4 +1,3 @@
-import * as _ from 'lodash';
 import { MAX_SPACERS, Runestone, isValidPayload } from '../src/runestone';
 import { u128, u32, u64, u8 } from '../src/integer';
 import { None, Option, Some } from '../src/monads';
@@ -15,6 +14,16 @@ import { Artifact } from '../src/artifact';
 import { Flaw } from '../src/flaw';
 
 type RunestoneTx = { vout: { scriptPubKey: { hex: string } }[] };
+
+function range(start: number, end?: number): number[] {
+  const from = end === undefined ? 0 : start;
+  const to = end === undefined ? start : end;
+  return Array.from({ length: Math.max(0, to - from) }, (_, i) => from + i);
+}
+
+function sortByStringKey<T>(items: T[], getKey: (item: T) => unknown): T[] {
+  return [...items].sort((a, b) => String(getKey(a)).localeCompare(String(getKey(b))));
+}
 
 function createRuneId(tx: number) {
   return new RuneId(u64(1), u32(tx));
@@ -394,7 +403,7 @@ describe('runestone', () => {
   test('trailing_integers_in_body_is_cenotaph', () => {
     const integers = [Tag.BODY, 1, 1, 2, 0];
 
-    for (const i of _.range(4)) {
+    for (const i of range(4)) {
       const runestone = decipher(integers.map(u128));
       if (i === 0) {
         if (runestone.type === 'cenotaph') {
@@ -899,7 +908,7 @@ describe('runestone', () => {
     );
 
     testcase(
-      _.range(4).map(() => ({
+      range(4).map(() => ({
         amount: u128(0xffff_ffff_ffff_ffffn),
         id: new RuneId(u64(1_000_000), u32.MAX),
         output: u32(0),
@@ -909,7 +918,7 @@ describe('runestone', () => {
     );
 
     testcase(
-      _.range(5).map(() => ({
+      range(5).map(() => ({
         amount: u128(0xffff_ffff_ffff_ffffn),
         id: new RuneId(u64(1_000_000), u32.MAX),
         output: u32(0),
@@ -919,7 +928,7 @@ describe('runestone', () => {
     );
 
     testcase(
-      _.range(5).map(() => ({
+      range(5).map(() => ({
         amount: u128(0xffff_ffff_ffff_ffffn),
         id: new RuneId(u64(0), u32.MAX),
         output: u32(0),
@@ -929,7 +938,7 @@ describe('runestone', () => {
     );
 
     testcase(
-      _.range(5).map(() => ({
+      range(5).map(() => ({
         amount: u128(1_000_000_000_000_000_000n),
         id: new RuneId(u64(1_000_000), u32.MAX),
         output: u32(0),
@@ -987,8 +996,8 @@ describe('runestone', () => {
         expect(txnRunestone.pointer.unwrap()).toBe(runestone.pointer.unwrap());
       }
 
-      expect(_.sortBy(txnRunestone.edicts, (edict) => edict.id)).toEqual(
-        _.sortBy(runestone.edicts, (edict) => edict.id)
+      expect(sortByStringKey(txnRunestone.edicts, (edict) => edict.id)).toEqual(
+        sortByStringKey(runestone.edicts, (edict) => edict.id)
       );
 
       expect(txnRunestone.etching.isSome()).toBe(runestone.etching.isSome());
@@ -1142,7 +1151,7 @@ describe('runestone', () => {
       const encodedRunestone = new Runestone(
         None,
         None,
-        _.range(129).map((i) => ({
+        range(129).map((i) => ({
           id: new RuneId(u64(0), u32(0)),
           amount: u128(0),
           output: u32(0),
@@ -1158,7 +1167,7 @@ describe('runestone', () => {
       const encodedRunestone = new Runestone(
         None,
         None,
-        _.range(130).map((i) => ({
+        range(130).map((i) => ({
           id: createRuneId(0),
           amount: u128(0),
           output: u32(0),
@@ -1175,7 +1184,7 @@ describe('runestone', () => {
     let rune = '';
 
     const maxRune = new Rune(u128.MAX).toString();
-    for (const i of _.range(maxRune.length)) {
+    for (const i of range(maxRune.length)) {
       if (i > 0) {
         rune += '•';
       }
@@ -1383,18 +1392,16 @@ describe('runestone', () => {
   });
 
   test('all_pushdata_opcodes_are_valid', () => {
-    for (const i of _.range(0, 79)) {
+    for (const i of range(0, 79)) {
       const scriptPubKeyBuffers: Buffer[] = [Buffer.from([OP_RETURN, MAGIC_NUMBER, i])];
       if (i <= 75) {
-        for (const j of _.range(0, i)) {
+        for (const j of range(0, i)) {
           scriptPubKeyBuffers.push(Buffer.from([j % 2]));
         }
 
         if (i >= 2) {
           const additionalIntegersCount = (77 - i) % 4;
-          const additionalIntegers = _.reverse(
-            _.range(0, additionalIntegersCount).map((i) => i % 2)
-          );
+          const additionalIntegers = range(0, additionalIntegersCount).map((i) => i % 2).reverse();
           scriptPubKeyBuffers.push(Buffer.from([additionalIntegersCount, ...additionalIntegers]));
         }
       } else if (i === 76) {
