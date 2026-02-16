@@ -1,8 +1,9 @@
-import { None, Option, Some } from '../monads';
-import { SeekBuffer } from '../seekbuffer';
-import { u64 } from './u64';
-import { u32 } from './u32';
-import { u8 } from './u8';
+import { Buff } from '@vbyte/buff';
+import { None, Option, Some } from '../monads.js';
+import { SeekBuffer } from '../seekbuffer.js';
+import { u64 } from './u64.js';
+import { u32 } from './u32.js';
+import { u8 } from './u8.js';
 
 /**
  * A little utility type used for nominal typing.
@@ -39,7 +40,7 @@ export const U128_MAX_BIGINT = 0xffff_ffff_ffff_ffff_ffff_ffff_ffff_ffffn;
  * @returns - The resulting 128-bit unsigned integer (BigInt).
  */
 export function u128(num: number | bigint): u128 {
-  if (typeof num == 'bigint') {
+  if (typeof num === 'bigint') {
     if (num < 0n || num > U128_MAX_BIGINT) {
       throw new Error('num is out of range');
     }
@@ -115,7 +116,7 @@ export namespace u128 {
   export function decodeVarInt(seekBuffer: SeekBuffer): Option<u128> {
     try {
       return Some(tryDecodeVarInt(seekBuffer));
-    } catch (e) {
+    } catch (_e) {
       return None;
     }
   }
@@ -144,7 +145,7 @@ export namespace u128 {
     throw new Error('Overlong');
   }
 
-  export function encodeVarInt(value: u128): Buffer {
+  export function encodeVarInt(value: u128): Buff {
     const v: number[] = [];
     while (value >> 7n > 0n) {
       v.push(Number(value & 0xffn) | 0b1000_0000);
@@ -152,7 +153,7 @@ export namespace u128 {
     }
     v.push(Number(value & 0xffn));
 
-    return Buffer.from(v);
+    return Buff.from(v);
   }
 
   export function tryIntoU64(n: u128): Option<u64> {
@@ -168,7 +169,7 @@ export namespace u128 {
   }
 }
 
-export function* getAllU128(buffer: Buffer): Generator<u128> {
+export function* getAllU128(buffer: Buff): Generator<u128> {
   const seekBuffer = new SeekBuffer(buffer);
   while (!seekBuffer.isFinished()) {
     const nextValue = u128.tryDecodeVarInt(seekBuffer);

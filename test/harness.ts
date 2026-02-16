@@ -1,5 +1,5 @@
 import * as assert from 'node:assert/strict';
-import tape = require('tape');
+import tape from 'tape';
 
 type TestFn = () => unknown | Promise<unknown>;
 type TableRow = unknown[] | unknown;

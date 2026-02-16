@@ -1,3 +1,4 @@
+import { Buff } from "@vbyte/buff";
 import { MAX_SPACERS, Runestone, isValidPayload } from '../src/runestone';
 import { u128, u32, u64, u8 } from '../src/integer';
 import { None, Option, Some } from '../src/monads';
@@ -37,18 +38,18 @@ describe('runestone', () => {
   }
 
   function getPayload(integers: u128[]) {
-    const payloads: Buffer[] = [];
+    const payloads: Buff[] = [];
 
     for (const integer of integers) {
       payloads.push(u128.encodeVarInt(integer));
     }
 
-    return Buffer.concat(payloads);
+    return Buff.join(payloads);
   }
 
-  function getSimpleTransaction(stack: (number | Buffer)[]): RunestoneTx {
+  function getSimpleTransaction(stack: (number | Buff)[]): RunestoneTx {
     return {
-      vout: [{ scriptPubKey: { hex: script.compile(stack).toString('hex') } }],
+      vout: [{ scriptPubKey: { hex: script.compile(stack).hex } }],
     };
   }
 
@@ -61,7 +62,7 @@ describe('runestone', () => {
   });
 
   test('deciphering_transaction_with_non_op_return_output_returns_none', () => {
-    expect(Runestone.decipher(getSimpleTransaction([Buffer.alloc(0)])).isNone()).toBe(true);
+    expect(Runestone.decipher(getSimpleTransaction([Buff.from([])])).isNone()).toBe(true);
   });
 
   test('deciphering_transaction_with_bare_op_return_returns_none', () => {
@@ -70,7 +71,7 @@ describe('runestone', () => {
 
   test('deciphering_transaction_with_non_matching_op_return_returns_none', () => {
     expect(
-      Runestone.decipher(getSimpleTransaction([opcodes.OP_RETURN, Buffer.from('FOOO')])).isNone()
+      Runestone.decipher(getSimpleTransaction([opcodes.OP_RETURN, Buff.str('FOOO')])).isNone()
     ).toBe(true);
   });
 
@@ -81,10 +82,10 @@ describe('runestone', () => {
   test('deciphering_valid_runestone_with_invalid_script_postfix_returns_invalid_payload', () => {
     const transaction = getSimpleTransaction([opcodes.OP_RETURN, MAGIC_NUMBER]);
 
-    transaction.vout[0].scriptPubKey.hex = Buffer.concat([
-      Buffer.from(transaction.vout[0].scriptPubKey.hex, 'hex'),
-      Buffer.from([4]),
-    ]).toString('hex');
+    transaction.vout[0].scriptPubKey.hex = Buff.join([
+      Buff.hex(transaction.vout[0].scriptPubKey.hex),
+      Buff.from([4]),
+    ]).hex;
 
     expect(isValidPayload(Runestone.payload(transaction).unwrap())).toBe(false);
   });
@@ -92,7 +93,7 @@ describe('runestone', () => {
   test('deciphering_runestone_with_truncated_varint_succeeds', () => {
     expect(
       Runestone.decipher(
-        getSimpleTransaction([opcodes.OP_RETURN, MAGIC_NUMBER, Buffer.from([128])])
+        getSimpleTransaction([opcodes.OP_RETURN, MAGIC_NUMBER, Buff.from([128])])
       ).isSome()
     ).toBe(true);
   });
@@ -107,12 +108,12 @@ describe('runestone', () => {
                 opcodes.OP_RETURN,
                 MAGIC_NUMBER,
                 opcodes.OP_VERIFY,
-                Buffer.from([0]),
+                Buff.from([0]),
                 u128.encodeVarInt(u128(1)),
                 u128.encodeVarInt(u128(1)),
-                Buffer.from([2, 0]),
+                Buff.from([2, 0]),
               ])
-              .toString('hex'),
+              .hex,
           },
         },
         {
@@ -121,12 +122,12 @@ describe('runestone', () => {
               .compile([
                 opcodes.OP_RETURN,
                 MAGIC_NUMBER,
-                Buffer.from([0]),
+                Buff.from([0]),
                 u128.encodeVarInt(u128(1)),
                 u128.encodeVarInt(u128(1)),
-                Buffer.from([3, 0]),
+                Buff.from([3, 0]),
               ])
-              .toString('hex'),
+              .hex,
           },
         },
       ],
@@ -151,15 +152,15 @@ describe('runestone', () => {
       vout: [
         {
           scriptPubKey: {
-            hex: Buffer.concat([
+            hex: Buff.join([
               script.compile([opcodes.OP_RETURN, 9, MAGIC_NUMBER, 4]),
-              Buffer.from([4]),
-            ]).toString('hex'),
+              Buff.from([4]),
+            ]).hex,
           },
         },
         {
           scriptPubKey: {
-            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).toString('hex'),
+            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).hex,
           },
         },
       ],
@@ -301,7 +302,7 @@ describe('runestone', () => {
 
   test('invalid_varint_produces_cenotaph', () => {
     const cenotaph = Runestone.decipher(
-      getSimpleTransaction([opcodes.OP_RETURN, MAGIC_NUMBER, Buffer.from([128])])
+      getSimpleTransaction([opcodes.OP_RETURN, MAGIC_NUMBER, Buff.from([128])])
     ).unwrap();
 
     if (cenotaph.type === 'runestone') {
@@ -728,7 +729,7 @@ describe('runestone', () => {
         { scriptPubKey: { hex: '' } },
         {
           scriptPubKey: {
-            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).toString('hex'),
+            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).hex,
           },
         },
       ],
@@ -749,12 +750,12 @@ describe('runestone', () => {
       vout: [
         {
           scriptPubKey: {
-            hex: script.compile([opcodes.OP_RETURN, Buffer.from('FOO')]).toString('hex'),
+            hex: script.compile([opcodes.OP_RETURN, Buff.str('FOO')]).hex,
           },
         },
         {
           scriptPubKey: {
-            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).toString('hex'),
+            hex: script.compile([opcodes.OP_RETURN, MAGIC_NUMBER, payload]).hex,
           },
         },
       ],
@@ -972,13 +973,13 @@ describe('runestone', () => {
       const scriptPubKey = runestone.encipher();
 
       const transaction = {
-        vout: [{ scriptPubKey: { hex: scriptPubKey.toString('hex') } }],
+        vout: [{ scriptPubKey: { hex: scriptPubKey.hex } }],
       };
 
       const payload = Runestone.payload(transaction).unwrap();
       expect(isValidPayload(payload)).toBe(true);
 
-      expect(Runestone.integers(payload as Buffer).unwrap()).toEqual(expected.map(u128));
+      expect(Runestone.integers(payload as Buff).unwrap()).toEqual(expected.map(u128));
 
       const txnRunestone = Runestone.decipher(transaction).unwrap();
 
@@ -1366,7 +1367,7 @@ describe('runestone', () => {
   test('invalid_scripts_in_op_returns_are_ignored', () => {
     {
       const transaction = {
-        vout: [{ scriptPubKey: { hex: Buffer.from([opcodes.OP_RETURN, 4]).toString('hex') } }],
+        vout: [{ scriptPubKey: { hex: Buff.from([opcodes.OP_RETURN, 4]).hex } }],
       };
 
       expect(Runestone.decipher(transaction).isNone()).toBe(true);
@@ -1377,7 +1378,7 @@ describe('runestone', () => {
         vout: [
           {
             scriptPubKey: {
-              hex: Buffer.from([opcodes.OP_RETURN, MAGIC_NUMBER, 4]).toString('hex'),
+              hex: Buff.from([opcodes.OP_RETURN, MAGIC_NUMBER, 4]).hex,
             },
           },
         ],
@@ -1393,31 +1394,31 @@ describe('runestone', () => {
 
   test('all_pushdata_opcodes_are_valid', () => {
     for (const i of range(0, 79)) {
-      const scriptPubKeyBuffers: Buffer[] = [Buffer.from([OP_RETURN, MAGIC_NUMBER, i])];
+      const scriptPubKeyBuffers: Buff[] = [Buff.from([OP_RETURN, MAGIC_NUMBER, i])];
       if (i <= 75) {
         for (const j of range(0, i)) {
-          scriptPubKeyBuffers.push(Buffer.from([j % 2]));
+          scriptPubKeyBuffers.push(Buff.from([j % 2]));
         }
 
         if (i >= 2) {
           const additionalIntegersCount = (77 - i) % 4;
           const additionalIntegers = range(0, additionalIntegersCount).map((i) => i % 2).reverse();
-          scriptPubKeyBuffers.push(Buffer.from([additionalIntegersCount, ...additionalIntegers]));
+          scriptPubKeyBuffers.push(Buff.from([additionalIntegersCount, ...additionalIntegers]));
         }
       } else if (i === 76) {
-        scriptPubKeyBuffers.push(Buffer.from([0]));
+        scriptPubKeyBuffers.push(Buff.from([0]));
       } else if (i === 77) {
-        scriptPubKeyBuffers.push(Buffer.from([0, 0]));
+        scriptPubKeyBuffers.push(Buff.from([0, 0]));
       } else if (i === 78) {
-        scriptPubKeyBuffers.push(Buffer.from([0, 0, 0, 0]));
+        scriptPubKeyBuffers.push(Buff.from([0, 0, 0, 0]));
       } else {
         throw Error;
       }
 
-      const scriptPubKey = Buffer.concat(scriptPubKeyBuffers);
+      const scriptPubKey = Buff.join(scriptPubKeyBuffers);
       expect(
         Runestone.decipher({
-          vout: [{ scriptPubKey: { hex: scriptPubKey.toString('hex') } }],
+          vout: [{ scriptPubKey: { hex: scriptPubKey.hex } }],
         }).unwrap().type
       ).toBe('runestone');
     }
@@ -1427,19 +1428,19 @@ describe('runestone', () => {
     for (let i = 1; i <= 16; i++) {
       {
         const opcode = opcodes.OP_RESERVED + i;
-        const scriptPubKey = Buffer.from([OP_RETURN, MAGIC_NUMBER, 3, 0, 1, 0, opcode, 1, 0]);
+        const scriptPubKey = Buff.from([OP_RETURN, MAGIC_NUMBER, 3, 0, 1, 0, opcode, 1, 0]);
         expect(
           Runestone.decipher({
-            vout: [{ scriptPubKey: { hex: scriptPubKey.toString('hex') } }],
+            vout: [{ scriptPubKey: { hex: scriptPubKey.hex } }],
           }).unwrap().type
         ).toBe('cenotaph');
       }
 
       {
-        const scriptPubKey = Buffer.from([OP_RETURN, MAGIC_NUMBER, 3, 0, 1, 0, 1, i, 1, 0]);
+        const scriptPubKey = Buff.from([OP_RETURN, MAGIC_NUMBER, 3, 0, 1, 0, 1, i, 1, 0]);
         expect(
           Runestone.decipher({
-            vout: [{ scriptPubKey: { hex: scriptPubKey.toString('hex') } }],
+            vout: [{ scriptPubKey: { hex: scriptPubKey.hex } }],
           }).unwrap().type
         ).toBe('runestone');
       }

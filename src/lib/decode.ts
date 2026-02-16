@@ -1,8 +1,8 @@
-import { Runestone } from '../runestone';
-import { SpacedRune } from '../spacedrune';
-import type { RunestoneTx } from '../runestone';
-import type { Cenotaph, RunestoneSpec } from '../types';
-import { getFlawString } from './shared';
+import { Runestone } from '../runestone.js';
+import { SpacedRune } from '../spacedrune.js';
+import type { RunestoneTx } from '../runestone.js';
+import type { Cenotaph, RunestoneSpec } from '../types/index.js';
+import { getFlawString } from './shared.js';
 
 export function tryDecodeRunestone(tx: RunestoneTx): RunestoneSpec | Cenotaph | null {
   const optionArtifact = Runestone.decipher(tx);

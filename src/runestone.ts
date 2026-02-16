@@ -1,28 +1,29 @@
-import { MAGIC_NUMBER, MAX_DIVISIBILITY, MAX_SCRIPT_ELEMENT_SIZE, OP_RETURN } from './constants';
-import { Edict } from './edict';
-import { Etching } from './etching';
-import { SeekBuffer } from './seekbuffer';
-import { Tag } from './tag';
-import { u128, u32, u64, u8 } from './integer';
-import { Option, Some, None } from './monads';
-import { Rune } from './rune';
-import { Flag } from './flag';
-import { Instruction } from './utils';
-import { RuneId } from './runeid';
-import { script } from './script';
-import { Message } from './message';
-import { Artifact } from './artifact';
-import { Flaw } from './flaw';
-import { Cenotaph } from './cenotaph';
+import { Buff } from '@vbyte/buff';
+import { MAGIC_NUMBER, MAX_DIVISIBILITY, MAX_SCRIPT_ELEMENT_SIZE, OP_RETURN } from './constants.js';
+import { Edict } from './edict.js';
+import { Etching } from './etching.js';
+import { SeekBuffer } from './seekbuffer.js';
+import { Tag } from './tag.js';
+import { u128, u32, u64, u8 } from './integer/index.js';
+import { Option, Some, None } from './monads.js';
+import { Rune } from './rune.js';
+import { Flag } from './flag.js';
+import { Instruction } from './utils.js';
+import { RuneId } from './runeid.js';
+import { script } from './script.js';
+import { Message } from './message.js';
+import { Artifact } from './artifact.js';
+import { Flaw } from './flaw.js';
+import { Cenotaph } from './cenotaph.js';
 
 export const MAX_SPACERS = 0b00000111_11111111_11111111_11111111;
 
 export type RunestoneTx = { vout: { scriptPubKey: { hex: string } }[] };
 
-type Payload = Buffer | Flaw;
+type Payload = Buff | Flaw;
 
-export function isValidPayload(payload: Payload): payload is Buffer {
-  return Buffer.isBuffer(payload);
+export function isValidPayload(payload: Payload): payload is Buff {
+  return Buff.is_bytes(payload);
 }
 
 export class Runestone {
@@ -87,7 +88,7 @@ export class Runestone {
             u128.tryIntoU32(value).andThen((value) => {
               try {
                 return Some(String.fromCodePoint(Number(value)));
-              } catch (e) {
+              } catch (_e) {
                 return None;
               }
             })
@@ -120,7 +121,7 @@ export class Runestone {
           const premine = Tag.take(Tag.PREMINE, fields, 1, ([value]) => Some(value));
 
           const turboResult = Flag.take(flags, Flag.TURBO);
-          const turbo = etchingResult.set;
+          const turbo = turboResult.set;
           flags = turboResult.flags;
 
           return Some(new Etching(divisibility, rune, spacers, symbol, terms, premine, turbo));
@@ -173,8 +174,8 @@ export class Runestone {
     return Some(new Runestone(mint, pointer, edicts, etching));
   }
 
-  encipher(): Buffer {
-    const payloads: Buffer[] = [];
+  encipher(): Buff {
+    const payloads: Buff[] = [];
 
     if (this.etching.isSome()) {
       const etching = this.etching.unwrap();
@@ -202,7 +203,10 @@ export class Runestone {
       payloads.push(
         Tag.encodeOptionInt(
           Tag.SYMBOL,
-          etching.symbol.map((symbol) => u128(symbol.codePointAt(0)!))
+          etching.symbol.map((symbol) => {
+            const codePoint = symbol.codePointAt(0);
+            return u128(codePoint ?? 0);
+          })
         )
       );
       payloads.push(Tag.encodeOptionInt(Tag.PREMINE, etching.premine));
@@ -245,11 +249,11 @@ export class Runestone {
       }
     }
 
-    const stack: (Buffer | number)[] = [];
+    const stack: (Buff | number)[] = [];
     stack.push(OP_RETURN);
     stack.push(MAGIC_NUMBER);
 
-    const payload = Buffer.concat(payloads);
+    const payload = Buff.join(payloads);
     for (let i = 0; i < payload.length; i += MAX_SCRIPT_ELEMENT_SIZE) {
       stack.push(payload.subarray(i, i + MAX_SCRIPT_ELEMENT_SIZE));
     }
@@ -260,7 +264,7 @@ export class Runestone {
   static payload(transaction: RunestoneTx): Option<Payload> {
     // search transaction outputs for payload
     for (const output of transaction.vout) {
-      const instructions = script.decompile(Buffer.from(output.scriptPubKey.hex, 'hex'));
+      const instructions = script.decompile(Buff.hex(output.scriptPubKey.hex));
       if (instructions === null) {
         throw new Error('unable to decompile');
       }
@@ -273,18 +277,19 @@ export class Runestone {
 
       // followed by the protocol identifier
       nextInstructionResult = instructions.next();
-      if (
-        nextInstructionResult.done ||
-        Instruction.isBuffer(nextInstructionResult.value) ||
-        nextInstructionResult.value !== MAGIC_NUMBER
-      ) {
+      if (nextInstructionResult.done) {
+        continue;
+      }
+      const magicInstruction = nextInstructionResult.value as script.Instruction;
+      if (Instruction.isBuffer(magicInstruction) || magicInstruction !== MAGIC_NUMBER) {
         continue;
       }
 
       // construct the payload by concatinating remaining data pushes
-      let payloads: Buffer[] = [];
+      const payloads: Buff[] = [];
 
-      do {
+      let readingPayload = true;
+      while (readingPayload) {
         nextInstructionResult = instructions.next();
 
         if (nextInstructionResult.done) {
@@ -292,24 +297,25 @@ export class Runestone {
           if (!decodedSuccessfully) {
             return Some(Flaw.INVALID_SCRIPT);
           }
-          break;
+          readingPayload = false;
+          continue;
         }
 
-        const instruction = nextInstructionResult.value;
+        const instruction = nextInstructionResult.value as script.Instruction;
         if (Instruction.isBuffer(instruction)) {
           payloads.push(instruction);
         } else {
           return Some(Flaw.OPCODE);
         }
-      } while (true);
+      }
 
-      return Some(Buffer.concat(payloads));
+      return Some(Buff.join(payloads));
     }
 
     return None;
   }
 
-  static integers(payload: Buffer): Option<u128[]> {
+  static integers(payload: Buff): Option<u128[]> {
     const integers: u128[] = [];
 
     const seekBuffer = new SeekBuffer(payload);

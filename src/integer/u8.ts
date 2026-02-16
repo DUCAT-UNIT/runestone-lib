@@ -1,4 +1,4 @@
-import { None, Option, Some } from '../monads';
+import { None, Option, Some } from '../monads.js';
 
 /**
  * A little utility type used for nominal typing.
@@ -22,7 +22,7 @@ export type u8 = BigTypedNumber<'u8'>;
 export const U8_MAX_BIGINT = 0xffn;
 
 export function u8(num: number | bigint): u8 {
-  if (typeof num == 'bigint') {
+  if (typeof num === 'bigint') {
     if (num < 0n || num > U8_MAX_BIGINT) {
       throw new Error('num is out of range');
     }

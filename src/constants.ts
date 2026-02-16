@@ -1,5 +1,5 @@
-import { u128, u8 } from './integer';
-import { opcodes } from './script';
+import { u128, u8 } from './integer/index.js';
+import { opcodes } from './script.js';
 
 export const MAX_DIVISIBILITY = u8(38);
 export const RESERVED = u128(6402364363415443603228541259936211926n);

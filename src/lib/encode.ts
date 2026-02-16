@@ -1,21 +1,22 @@
-import { MAX_DIVISIBILITY } from '../constants';
-import { Etching } from '../etching';
-import { u128, u64 } from '../integer';
-import { None, Some } from '../monads';
-import { RuneId } from '../runeid';
-import { Runestone } from '../runestone';
-import { SpacedRune } from '../spacedrune';
-import type { Option } from '../monads';
-import type { Terms } from '../terms';
-import type { RunestoneSpec } from '../types';
-import { u128Strict, u32Strict, u64Strict, u8Strict } from './shared';
+import { Buff } from '@vbyte/buff';
+import { MAX_DIVISIBILITY } from '../constants.js';
+import { Etching } from '../etching.js';
+import { u128, u64 } from '../integer/index.js';
+import { None, Some } from '../monads.js';
+import { RuneId } from '../runeid.js';
+import { Runestone } from '../runestone.js';
+import { SpacedRune } from '../spacedrune.js';
+import type { Option } from '../monads.js';
+import type { Terms } from '../terms.js';
+import type { RunestoneSpec } from '../types/index.js';
+import { u128Strict, u32Strict, u64Strict, u8Strict } from './shared.js';
 
 /**
  * Low-level function to encode a runestone from a spec.
  */
 export function encodeRunestone(runestone: RunestoneSpec): {
-  encodedRunestone: Buffer;
-  etchingCommitment?: Buffer;
+  encodedRunestone: Buff;
+  etchingCommitment?: Buff;
 } {
   const mint = runestone.mint
     ? Some(new RuneId(u64Strict(runestone.mint.block), u32Strict(runestone.mint.tx)))
@@ -30,7 +31,7 @@ export function encodeRunestone(runestone: RunestoneSpec): {
   }));
 
   let etching: Option<Etching> = None;
-  let etchingCommitment: Buffer | undefined;
+  let etchingCommitment: Buff | undefined;
 
   if (runestone.etching) {
     const etchingSpec = runestone.etching;

@@ -1,5 +1,17 @@
 # CHANGELOG
 
+## [2.0.2] - 2026-02-16
+
+### Changed
+- Replaced Node `Buffer` usage with `@vbyte/buff` across runtime encode/decode paths and tests.
+- Aligned TypeScript toolchain and config with `core-ts` conventions:
+  - NodeNext/ESNext project config
+  - strict ESM package mode (`"type": "module"`)
+  - pinned TypeScript-related dev dependency versions
+- Updated internal source imports to NodeNext-compatible `.js` specifiers.
+- Updated test harness to ESM-compatible Tape import style.
+- Refined monad typing to remove lint warnings and tighten `None` typing.
+
 ## [2.0.1] - 2026-02-16
 
 ### Changed

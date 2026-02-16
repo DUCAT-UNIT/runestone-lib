@@ -1,5 +1,5 @@
-import { None, Option, Some } from './monads';
-import { u64, u32, u128 } from './integer';
+import { None, Option, Some } from './monads.js';
+import { u64, u32, u128 } from './integer/index.js';
 
 export class RuneId {
   constructor(readonly block: u64, readonly tx: u32) {}

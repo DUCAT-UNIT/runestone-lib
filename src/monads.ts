@@ -5,7 +5,7 @@
  * Type representing any value except 'undefined'.
  * This is useful when working with strict null checks, ensuring that a value can be null but not undefined.
  */
-type NonUndefined = {} | null; // eslint-disable-line @typescript-eslint/ban-types
+type NonUndefined = Exclude<unknown, undefined>;
 
 /**
  * Enum-like object to represent the type of an Option (Some or None).
@@ -246,7 +246,7 @@ class SomeImpl<T extends NonUndefined> implements SomeOption<T> {
     return this;
   }
 
-  orElse(optb: () => Option<T>): Option<T> {
+  orElse(_optb: () => Option<T>): Option<T> {
     return this;
   }
 
@@ -291,7 +291,7 @@ class NoneImpl<T extends NonUndefined> implements NoneOption<T> {
     return new NoneImpl<U>();
   }
 
-  inspect(fn: (val: T) => void): Option<T> {
+  inspect(_fn: (val: T) => void): Option<T> {
     return this;
   }
 
@@ -349,7 +349,7 @@ export function Some<T extends NonUndefined>(val: T): Option<T> {
  * console.log(option.isNone()); // Outputs: true
  * ```
  */
-export const None: Option<any> = new NoneImpl(); // eslint-disable-line @typescript-eslint/no-explicit-any
+export const None: Option<never> = new NoneImpl<never>();
 
 /**
  * Type guard to check if an Option is a Some value.

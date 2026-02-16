@@ -1,7 +1,7 @@
-import { Flaw } from './flaw';
-import { None, Option } from './monads';
-import { Rune } from './rune';
-import { RuneId } from './runeid';
+import { Flaw } from './flaw.js';
+import { None, Option } from './monads.js';
+import { Rune } from './rune.js';
+import { RuneId } from './runeid.js';
 
 export class Cenotaph {
   readonly type = 'cenotaph';

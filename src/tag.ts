@@ -1,6 +1,7 @@
-import { None, Option, Some } from './monads';
-import { u128 } from './integer';
-import { FixedArray } from './utils';
+import { Buff } from '@vbyte/buff';
+import { None, Option, Some } from './monads.js';
+import { u128 } from './integer/index.js';
+import { FixedArray } from './utils.js';
 
 export enum Tag {
   BODY = 0,
@@ -58,13 +59,13 @@ export namespace Tag {
     return Some(optionValue.unwrap());
   }
 
-  export function encode(tag: Tag, values: u128[]): Buffer {
-    return Buffer.concat(
-      values.map((value) => [u128.encodeVarInt(u128(tag)), u128.encodeVarInt(value)]).flat()
+  export function encode(tag: Tag, values: u128[]): Buff {
+    return Buff.join(
+      values.flatMap((value) => [u128.encodeVarInt(u128(tag)), u128.encodeVarInt(value)])
     );
   }
 
   export function encodeOptionInt(tag: Tag, value: Option<number | bigint>) {
-    return value.map((value) => Tag.encode(tag, [u128(value)])).unwrapOr(Buffer.alloc(0));
+    return value.map((value) => Tag.encode(tag, [u128(value)])).unwrapOr(Buff.from([]));
   }
 }

@@ -1,6 +1,6 @@
-import { Option, Some, None } from './monads';
-import { RuneId } from './runeid';
-import { u128, u32 } from './integer';
+import { Option, Some, None } from './monads.js';
+import { RuneId } from './runeid.js';
+import { u128, u32 } from './integer/index.js';
 
 export type Edict = {
   id: RuneId;

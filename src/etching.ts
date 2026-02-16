@@ -1,7 +1,7 @@
-import { None, Option, Some } from './monads';
-import { Terms } from './terms';
-import { Rune } from './rune';
-import { u128, u32, u8 } from './integer';
+import { None, Option, Some } from './monads.js';
+import { Terms } from './terms.js';
+import { Rune } from './rune.js';
+import { u128, u32, u8 } from './integer/index.js';
 
 export class Etching {
   readonly symbol: Option<string>;

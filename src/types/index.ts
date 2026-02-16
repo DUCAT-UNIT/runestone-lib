@@ -1,1 +1,1 @@
-export * from './runestone';
+export * from './runestone.js';

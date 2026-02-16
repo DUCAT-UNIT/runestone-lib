@@ -1,3 +1,4 @@
+import { Buff } from '@vbyte/buff';
 import { SeekBuffer } from '../src/seekbuffer';
 import { u128 } from '../src/integer/u128';
 
@@ -86,12 +87,12 @@ describe('u128 varint encoding', () => {
 
   test('varints may not be longer than 19 bytes', () => {
     const VALID = new SeekBuffer(
-      Buffer.from([
+      Buff.from([
         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 0,
       ])
     );
     const INVALID = new SeekBuffer(
-      Buffer.from([
+      Buff.from([
         128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
         128, 0,
       ])
@@ -105,7 +106,7 @@ describe('u128 varint encoding', () => {
     expect(() =>
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 64,
           ])
@@ -115,7 +116,7 @@ describe('u128 varint encoding', () => {
     expect(() =>
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 32,
           ])
@@ -125,7 +126,7 @@ describe('u128 varint encoding', () => {
     expect(() =>
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 16,
           ])
@@ -135,7 +136,7 @@ describe('u128 varint encoding', () => {
     expect(() =>
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 8,
           ])
@@ -145,7 +146,7 @@ describe('u128 varint encoding', () => {
     expect(() =>
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 4,
           ])
@@ -155,7 +156,7 @@ describe('u128 varint encoding', () => {
     expect(
       u128.tryDecodeVarInt(
         new SeekBuffer(
-          Buffer.from([
+          Buff.from([
             128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128, 128,
             128, 2,
           ])
@@ -165,6 +166,6 @@ describe('u128 varint encoding', () => {
   });
 
   test('varints must be terminated', () => {
-    expect(() => u128.tryDecodeVarInt(new SeekBuffer(Buffer.from([128])))).toThrow('Unterminated');
+    expect(() => u128.tryDecodeVarInt(new SeekBuffer(Buff.from([128])))).toThrow('Unterminated');
   });
 });

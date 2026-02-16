@@ -1,6 +1,6 @@
-import { Flaw as FlawEnum } from '../flaw';
-import { u128, u32, u64, u8 } from '../integer';
-import type { Flaw } from '../types';
+import { Flaw as FlawEnum } from '../flaw.js';
+import { u128, u32, u64, u8 } from '../integer/index.js';
+import type { Flaw } from '../types/index.js';
 
 export function getFlawString(flaw: FlawEnum): Flaw {
   switch (flaw) {

@@ -1,3 +1,5 @@
+import { Buff } from '@vbyte/buff';
+
 namespace pushdata {
   /**
    * Calculates the encoding length of a number used for push data in Bitcoin transactions.
@@ -18,27 +20,31 @@ namespace pushdata {
    * @param offset - The offset at which to start writing the encoded buffer.
    * @returns The size of the encoded buffer.
    */
-  export function encode(buffer: Buffer, num: number, offset: number): number {
+  export function encode(buffer: Buff, num: number, offset: number): number {
     const size = encodingLength(num);
 
     // ~6 bit
     if (size === 1) {
-      buffer.writeUInt8(num, offset);
+      buffer[offset] = num;
 
       // 8 bit
     } else if (size === 2) {
-      buffer.writeUInt8(OPS.OP_PUSHDATA1, offset);
-      buffer.writeUInt8(num, offset + 1);
+      buffer[offset] = OPS.OP_PUSHDATA1;
+      buffer[offset + 1] = num;
 
       // 16 bit
     } else if (size === 3) {
-      buffer.writeUInt8(OPS.OP_PUSHDATA2, offset);
-      buffer.writeUInt16LE(num, offset + 1);
+      buffer[offset] = OPS.OP_PUSHDATA2;
+      buffer[offset + 1] = num & 0xff;
+      buffer[offset + 2] = (num >> 8) & 0xff;
 
       // 32 bit
     } else {
-      buffer.writeUInt8(OPS.OP_PUSHDATA4, offset);
-      buffer.writeUInt32LE(num, offset + 1);
+      buffer[offset] = OPS.OP_PUSHDATA4;
+      buffer[offset + 1] = num & 0xff;
+      buffer[offset + 2] = (num >> 8) & 0xff;
+      buffer[offset + 3] = (num >> 16) & 0xff;
+      buffer[offset + 4] = (num >> 24) & 0xff;
     }
 
     return size;
@@ -51,14 +57,14 @@ namespace pushdata {
    * @returns An object containing the opcode, number, and size, or null if decoding fails.
    */
   export function decode(
-    buffer: Buffer,
+    buffer: Buff,
     offset: number
   ): {
     opcode: number;
     number: number;
     size: number;
   } | null {
-    const opcode = buffer.readUInt8(offset);
+    const opcode = buffer[offset];
     let num: number;
     let size: number;
 
@@ -70,13 +76,13 @@ namespace pushdata {
       // 8 bit
     } else if (opcode === OPS.OP_PUSHDATA1) {
       if (offset + 2 > buffer.length) return null;
-      num = buffer.readUInt8(offset + 1);
+      num = buffer[offset + 1];
       size = 2;
 
       // 16 bit
     } else if (opcode === OPS.OP_PUSHDATA2) {
       if (offset + 3 > buffer.length) return null;
-      num = buffer.readUInt16LE(offset + 1);
+      num = buffer[offset + 1] | (buffer[offset + 2] << 8);
       size = 3;
 
       // 32 bit
@@ -84,7 +90,11 @@ namespace pushdata {
       if (offset + 5 > buffer.length) return null;
       if (opcode !== OPS.OP_PUSHDATA4) throw new Error('Unexpected opcode');
 
-      num = buffer.readUInt32LE(offset + 1);
+      num =
+        buffer[offset + 1] +
+        buffer[offset + 2] * 2 ** 8 +
+        buffer[offset + 3] * 2 ** 16 +
+        buffer[offset + 4] * 2 ** 24;
       size = 5;
     }
 
@@ -234,15 +244,13 @@ const OPS = {
 
 export const opcodes = OPS;
 
-const OP_INT_BASE = OPS.OP_RESERVED; // OP_1 - 1
-
-function singleChunkIsBuffer(buf: number | Buffer): buf is Buffer {
-  return Buffer.isBuffer(buf);
+function singleChunkIsBuffer(buf: number | Buff): buf is Buff {
+  return Buff.is_bytes(buf);
 }
 export namespace script {
-  export type Instruction = number | Buffer;
+  export type Instruction = number | Buff;
 
-  export function compile(chunks: Array<number | Buffer>): Buffer {
+  export function compile(chunks: Array<number | Buff>): Buff {
     const bufferSize = chunks.reduce((accum: number, chunk) => {
       // data chunk
       if (singleChunkIsBuffer(chunk)) {
@@ -253,19 +261,19 @@ export namespace script {
       return accum + 1;
     }, 0.0);
 
-    const buffer = Buffer.allocUnsafe(bufferSize);
+    const buffer = new Buff(new Uint8Array(bufferSize));
     let offset = 0;
 
     chunks.forEach((chunk) => {
       // data chunk
       if (singleChunkIsBuffer(chunk)) {
         offset += pushdata.encode(buffer, chunk.length, offset);
-        chunk.copy(buffer, offset);
+        buffer.set(chunk, offset);
         offset += chunk.length;
 
         // opcode
       } else {
-        buffer.writeUInt8(chunk, offset);
+        buffer[offset] = chunk;
         offset += 1;
       }
     });
@@ -274,7 +282,7 @@ export namespace script {
     return buffer;
   }
 
-  export function* decompile(buffer: Buffer): Generator<Instruction, boolean> {
+  export function* decompile(buffer: Buff): Generator<Instruction, boolean> {
     let i = 0;
 
     while (i < buffer.length) {

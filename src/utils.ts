@@ -1,11 +1,12 @@
-import { script } from './script';
+import { Buff } from '@vbyte/buff';
+import { script } from './script.js';
 
 export namespace Instruction {
   export function isNumber(instruction: script.Instruction): instruction is number {
     return typeof instruction === 'number';
   }
 
-  export function isBuffer(instruction: script.Instruction): instruction is Buffer {
+  export function isBuffer(instruction: script.Instruction): instruction is Buff {
     return typeof instruction !== 'number';
   }
 }

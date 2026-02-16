@@ -1,4 +1,4 @@
-import { Cenotaph } from './cenotaph';
-import { Runestone } from './runestone';
+import { Cenotaph } from './cenotaph.js';
+import { Runestone } from './runestone.js';
 
 export type Artifact = Cenotaph | Runestone;

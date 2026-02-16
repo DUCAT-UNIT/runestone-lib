@@ -1,4 +1,4 @@
-import { Rune } from './rune';
+import { Rune } from './rune.js';
 
 export class SpacedRune {
   constructor(readonly rune: Rune, readonly spacers: number) {}

@@ -1,8 +1,8 @@
-import { Edict } from './edict';
-import { Flaw } from './flaw';
-import { u128, u64, u32 } from './integer';
-import { RuneId } from './runeid';
-import { Tag } from './tag';
+import { Edict } from './edict.js';
+import { Flaw } from './flaw.js';
+import { u128, u64, u32 } from './integer/index.js';
+import { RuneId } from './runeid.js';
+import { Tag } from './tag.js';
 
 export class Message {
   constructor(

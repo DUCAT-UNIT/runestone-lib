@@ -1,4 +1,4 @@
-import { u128 } from './integer';
+import { u128 } from './integer/index.js';
 
 export enum Flag {
   ETCHING = 0,

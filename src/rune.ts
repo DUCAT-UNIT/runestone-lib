@@ -1,6 +1,7 @@
-import { Network } from './network';
-import { RESERVED, SUBSIDY_HALVING_INTERVAL } from './constants';
-import { u128, u32, u64 } from './integer';
+import { Buff } from '@vbyte/buff';
+import { Network } from './network.js';
+import { RESERVED, SUBSIDY_HALVING_INTERVAL } from './constants.js';
+import { u128, u32, u64 } from './integer/index.js';
 
 export class Rune {
   static readonly STEPS = [
@@ -37,13 +38,13 @@ export class Rune {
   constructor(readonly value: u128) {}
 
   static getMinimumAtHeight(chain: Network, height: u128) {
-    let offset = u128.saturatingAdd(height, u128(1));
+    const offset = u128.saturatingAdd(height, u128(1));
 
     const INTERVAL = u128(SUBSIDY_HALVING_INTERVAL / 12);
 
-    let startSubsidyInterval = u128(Network.getFirstRuneHeight(chain));
+    const startSubsidyInterval = u128(Network.getFirstRuneHeight(chain));
 
-    let endSubsidyInterval = u128.saturatingAdd(
+    const endSubsidyInterval = u128.saturatingAdd(
       startSubsidyInterval,
       u128(SUBSIDY_HALVING_INTERVAL)
     );
@@ -56,16 +57,16 @@ export class Rune {
       return new Rune(u128(0));
     }
 
-    let progress = u128.saturatingSub(offset, startSubsidyInterval);
+    const progress = u128.saturatingSub(offset, startSubsidyInterval);
 
-    let length = u128.saturatingSub(u128(12n), u128(progress / INTERVAL));
-    let lengthNumber = Number(length & u128(u32.MAX));
+    const length = u128.saturatingSub(u128(12n), u128(progress / INTERVAL));
+    const lengthNumber = Number(length & u128(u32.MAX));
 
-    let endStepInterval = Rune.STEPS[lengthNumber];
+    const endStepInterval = Rune.STEPS[lengthNumber];
 
-    let startStepInterval = Rune.STEPS[lengthNumber - 1];
+    const startStepInterval = Rune.STEPS[lengthNumber - 1];
 
-    let remainder = u128(progress % INTERVAL);
+    const remainder = u128(progress % INTERVAL);
 
     return new Rune(
       u128(endStepInterval - ((endStepInterval - startStepInterval) * remainder) / INTERVAL)
@@ -76,10 +77,11 @@ export class Rune {
     return this.value >= RESERVED;
   }
 
-  get commitment(): Buffer {
-    const bytes = Buffer.alloc(16);
-    bytes.writeBigUInt64LE(0xffffffff_ffffffffn & this.value, 0);
-    bytes.writeBigUInt64LE(this.value >> 64n, 8);
+  get commitment(): Buff {
+    const bytes = new Buff(new Uint8Array(16));
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    view.setBigUint64(0, 0xffffffff_ffffffffn & this.value, true);
+    view.setBigUint64(8, this.value >> 64n, true);
 
     let end = bytes.length;
     while (end > 0 && bytes.at(end - 1) === 0) {

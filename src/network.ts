@@ -1,4 +1,4 @@
-import { SUBSIDY_HALVING_INTERVAL } from './constants';
+import { SUBSIDY_HALVING_INTERVAL } from './constants.js';
 
 export enum Network {
   MAINNET,
