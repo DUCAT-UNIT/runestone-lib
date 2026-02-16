@@ -540,7 +540,7 @@ describe('runestone', () => {
         Tag.SPACERS,
         5,
         Tag.SYMBOL,
-        'a'.codePointAt(0)!,
+        'a'.charCodeAt(0),
         Tag.OFFSET_END,
         2,
         Tag.AMOUNT,
@@ -1097,7 +1097,7 @@ describe('runestone', () => {
         Tag.SPACERS,
         10,
         Tag.SYMBOL,
-        '@'.codePointAt(0)!,
+        '@'.charCodeAt(0),
         Tag.PREMINE,
         8,
         Tag.AMOUNT,
@@ -1151,7 +1151,7 @@ describe('runestone', () => {
       const encodedRunestone = new Runestone(
         None,
         None,
-        range(129).map((i) => ({
+        range(129).map(() => ({
           id: new RuneId(u64(0), u32(0)),
           amount: u128(0),
           output: u32(0),
@@ -1167,7 +1167,7 @@ describe('runestone', () => {
       const encodedRunestone = new Runestone(
         None,
         None,
-        range(130).map((i) => ({
+        range(130).map(() => ({
           id: createRuneId(0),
           amount: u128(0),
           output: u32(0),

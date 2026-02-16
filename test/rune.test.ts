@@ -174,7 +174,7 @@ describe('rune', () => {
         expect(rune.value).toBe(Rune.STEPS[i]);
 
         i++;
-      } catch (e) {
+      } catch (_e) {
         expect(Rune.STEPS.length).toBe(i);
         break;
       }
