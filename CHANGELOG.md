@@ -1,5 +1,14 @@
 # CHANGELOG
 
+## [2.0.3] - 2026-02-17
+
+### Changed
+- Updated dev dependencies via ncu (`@biomejs/biome` 2.3.13 → 2.4.2, `@types/node` 25.0.10 → 25.2.3).
+
+### Fixed
+- `tryDecodeRunestone` now catches exceptions from `Runestone.decipher` and returns `null` instead of throwing.
+- `Runestone.decipher` returns `Flaw.INVALID_SCRIPT` instead of throwing when script decompilation fails.
+
 ## [2.0.2] - 2026-02-16
 
 ### Changed

@@ -5,7 +5,12 @@ import type { Cenotaph, RunestoneSpec } from '../types/index.js';
 import { getFlawString } from './shared.js';
 
 export function tryDecodeRunestone(tx: RunestoneTx): RunestoneSpec | Cenotaph | null {
-  const optionArtifact = Runestone.decipher(tx);
+  let optionArtifact: ReturnType<typeof Runestone.decipher>;
+  try {
+    optionArtifact = Runestone.decipher(tx);
+  } catch {
+    return null;
+  }
   if (optionArtifact.isNone()) {
     return null;
   }

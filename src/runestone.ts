@@ -266,7 +266,7 @@ export class Runestone {
     for (const output of transaction.vout) {
       const instructions = script.decompile(Buff.hex(output.scriptPubKey.hex));
       if (instructions === null) {
-        throw new Error('unable to decompile');
+        return Some(Flaw.INVALID_SCRIPT);
       }
 
       // payload starts with OP_RETURN
