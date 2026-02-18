@@ -4,6 +4,7 @@ import type { RunestoneTx } from '../runestone.js';
 import type { Cenotaph, RunestoneSpec } from '../types/index.js';
 import { getFlawString } from './shared.js';
 
+/** Decode runestone artifact from transaction, returning null on hard decode failure. */
 export function tryDecodeRunestone(tx: RunestoneTx): RunestoneSpec | Cenotaph | null {
   let optionArtifact: ReturnType<typeof Runestone.decipher>;
   try {

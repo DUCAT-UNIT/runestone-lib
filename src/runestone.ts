@@ -18,14 +18,17 @@ import { Cenotaph } from './cenotaph.js';
 
 export const MAX_SPACERS = 0b00000111_11111111_11111111_11111111;
 
+/** Minimal transaction view required for runestone deciphering. */
 export type RunestoneTx = { vout: { scriptPubKey: { hex: string } }[] };
 
 type Payload = Buff | Flaw;
 
+/** Runtime guard that payload bytes were parsed successfully. */
 export function isValidPayload(payload: Payload): payload is Buff {
   return Buff.is_bytes(payload);
 }
 
+/** Runestone artifact model with encipher/decipher helpers. */
 export class Runestone {
   readonly type = 'runestone';
 
@@ -36,6 +39,7 @@ export class Runestone {
     readonly etching: Option<Etching>
   ) {}
 
+  /** Decode the first valid runestone payload from transaction outputs. */
   static decipher(transaction: RunestoneTx): Option<Artifact> {
     const optionPayload = Runestone.payload(transaction);
     if (optionPayload.isNone()) {
@@ -174,6 +178,7 @@ export class Runestone {
     return Some(new Runestone(mint, pointer, edicts, etching));
   }
 
+  /** Encode this runestone into an OP_RETURN script payload buffer. */
   encipher(): Buff {
     const payloads: Buff[] = [];
 
