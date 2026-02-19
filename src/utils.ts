@@ -2,8 +2,8 @@
  * @fileoverview runestone-ts/src/utils.ts
  */
 
-import { Buff } from '@vbyte/buff';
-import { script } from './script.js';
+import { Buff }   from '@vbyte/buff'
+import { script } from './script.js'
 
 export namespace Instruction {
   export function isNumber(instruction: script.Instruction): instruction is number {
