@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/tag.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { None, Option, Some } from './monads.js';
 import { u128 } from './integer/index.js';

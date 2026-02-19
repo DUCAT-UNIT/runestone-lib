@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/rune.test.ts
+ */
+
 import { U128_MAX_BIGINT, u128 } from '../src/integer/u128';
 import { Rune } from '../src/rune';
 import { Network } from '../src/network';

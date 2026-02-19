@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/seekbuffer.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 
 export class SeekBuffer {

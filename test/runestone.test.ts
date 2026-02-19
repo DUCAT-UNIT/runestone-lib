@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/runestone.test.ts
+ */
+
 import { Buff } from "@vbyte/buff";
 import { MAX_SPACERS, Runestone, isValidPayload } from '../src/runestone';
 import { u128, u32, u64, u8 } from '../src/integer';

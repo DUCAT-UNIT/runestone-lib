@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/lib/encode.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { MAX_DIVISIBILITY } from '../constants.js';
 import { Etching } from '../etching.js';

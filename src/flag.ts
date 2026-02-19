@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/flag.ts
+ */
+
 import { u128 } from './integer/index.js';
 
 export enum Flag {

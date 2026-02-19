@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/etching.test.ts
+ */
+
 import { Etching } from '../src/etching';
 import { u128 } from '../src/integer';
 import { None, Some, Option } from '../src/monads';

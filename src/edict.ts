@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/edict.ts
+ */
+
 import { Option, Some, None } from './monads.js';
 import { RuneId } from './runeid.js';
 import { u128, u32 } from './integer/index.js';

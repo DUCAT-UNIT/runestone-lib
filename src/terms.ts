@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/terms.ts
+ */
+
 import { Option } from './monads.js';
 import { u128, u64 } from './integer/index.js';
 

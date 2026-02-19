@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/fixtures.ts
+ */
+
 import { Etching } from '../src/etching';
 import { u64, u32, u128, u8 } from '../src/integer';
 import { Some, None } from '../src/monads';

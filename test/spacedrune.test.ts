@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/spacedrune.test.ts
+ */
+
 import { Rune } from '../src/rune';
 import { SpacedRune } from '../src/spacedrune';
 import { u128 } from '../src/integer/u128';

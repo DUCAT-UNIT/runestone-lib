@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/runeid.ts
+ */
+
 import { None, Option, Some } from './monads.js';
 import { u64, u32, u128 } from './integer/index.js';
 

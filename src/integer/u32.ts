@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/integer/u32.ts
+ */
+
 import { None, Option, Some } from '../monads.js';
 
 /**

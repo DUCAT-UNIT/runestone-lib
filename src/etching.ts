@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/etching.ts
+ */
+
 import { None, Option, Some } from './monads.js';
 import { Terms } from './terms.js';
 import { Rune } from './rune.js';

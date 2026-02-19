@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/rune.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { Network } from './network.js';
 import { RESERVED, SUBSIDY_HALVING_INTERVAL } from './constants.js';

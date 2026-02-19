@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/harness.ts
+ */
+
 import * as assert from 'node:assert/strict';
 import tape from 'tape';
 

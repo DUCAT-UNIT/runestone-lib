@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/integer/u128.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { None, Option, Some } from '../monads.js';
 import { SeekBuffer } from '../seekbuffer.js';

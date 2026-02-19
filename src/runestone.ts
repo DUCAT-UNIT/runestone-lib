@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/runestone.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { MAGIC_NUMBER, MAX_DIVISIBILITY, MAX_SCRIPT_ELEMENT_SIZE, OP_RETURN } from './constants.js';
 import { Edict } from './edict.js';

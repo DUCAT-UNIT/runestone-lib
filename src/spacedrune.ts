@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/spacedrune.ts
+ */
+
 import { Rune } from './rune.js';
 
 export class SpacedRune {

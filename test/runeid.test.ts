@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/runeid.test.ts
+ */
+
 import { RuneId } from '../src/runeid';
 import { u128 } from '../src/integer/u128';
 import { u64, u32 } from '../src/integer';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/cenotaph.ts
+ */
+
 import { Flaw } from './flaw.js';
 import { None, Option } from './monads.js';
 import { Rune } from './rune.js';

@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/message.ts
+ */
+
 import { Edict } from './edict.js';
 import { Flaw } from './flaw.js';
 import { u128, u64, u32 } from './integer/index.js';

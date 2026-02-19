@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/utils.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { script } from './script.js';
 

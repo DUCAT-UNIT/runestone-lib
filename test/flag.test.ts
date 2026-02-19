@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/flag.test.ts
+ */
+
 import { Flag } from '../src/flag';
 import { u128 } from '../src/integer/u128';
 

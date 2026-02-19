@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/monads.ts
+ */
+
 // Copied with MIT License from link below:
 // https://github.com/thames-technology/monads/blob/de957d3d68449d659518d99be4ea74bbb70dfc8e/src/option/option.ts
 

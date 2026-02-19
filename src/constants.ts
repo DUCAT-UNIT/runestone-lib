@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/constants.ts
+ */
+
 import { u128, u8 } from './integer/index.js';
 import { opcodes } from './script.js';
 

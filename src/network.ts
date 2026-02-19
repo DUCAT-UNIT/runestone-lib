@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/network.ts
+ */
+
 import { SUBSIDY_HALVING_INTERVAL } from './constants.js';
 
 export enum Network {

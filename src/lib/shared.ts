@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/lib/shared.ts
+ */
+
 import { Flaw as FlawEnum } from '../flaw.js';
 import { u128, u32, u64, u8 } from '../integer/index.js';
 import type { Flaw } from '../types/index.js';

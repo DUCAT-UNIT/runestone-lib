@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/script.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 
 namespace pushdata {

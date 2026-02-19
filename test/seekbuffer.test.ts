@@ -1,3 +1,7 @@
+/**
+ * @fileoverview repos/runestone-ts/test/seekbuffer.test.ts
+ */
+
 import { Buff } from '@vbyte/buff';
 import { SeekBuffer } from '../src/seekbuffer';
 

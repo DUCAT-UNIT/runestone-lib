@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/flaw.ts
+ */
+
 export enum Flaw {
   EDICT_OUTPUT,
   EDICT_RUNE_ID,

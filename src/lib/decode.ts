@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/lib/decode.ts
+ */
+
 import { Runestone } from '../runestone.js';
 import { SpacedRune } from '../spacedrune.js';
 import type { RunestoneTx } from '../runestone.js';

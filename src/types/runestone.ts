@@ -1,3 +1,7 @@
+/**
+ * @fileoverview runestone-ts/src/types/runestone.ts
+ */
+
 export type RuneEtchingSpec = {
   divisibility?: number;
   premine?: bigint;
