@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.6] - 2026-02-26
+
+### Changed
+- Updated dev dependencies via ncu (`@types/node` 25.3.0 -> 25.3.1).
+
 ## [2.0.5] - 2026-02-20
 
 ### Changed
