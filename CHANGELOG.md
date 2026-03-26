@@ -1,5 +1,11 @@
 # CHANGELOG
 
+## [2.0.8] - 2026-03-26
+
+### Changed
+- Updated dev dependencies via ncu (`@biomejs/biome` 2.4.5 -> 2.4.9, `@types/node` 25.3.3 -> 25.5.0, `typescript` 5.9.3 -> 6.0.2).
+- Added TypeScript 6 deprecation guards to project/test `tsconfig` files.
+
 ## [2.0.7] - 2026-03-04
 
 ### Changed
