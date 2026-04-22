@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.9] - 2026-04-22
+
+### Changed
+- Updated dev dependencies via ncu (`@biomejs/biome` 2.4.9 -> 2.4.12, `@types/node` 25.5.0 -> 25.6.0, `typescript` 6.0.2 -> 6.0.3).
+
 ## [2.0.8] - 2026-03-26
 
 ### Changed
