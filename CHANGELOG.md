@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## [2.0.11] - 2026-05-01
+
+### Changed
+- Updated dev dependencies via ncu (`@biomejs/biome` 2.4.13 -> 2.4.14).
+
 ## [2.0.10] - 2026-04-23
 
 ### Changed
