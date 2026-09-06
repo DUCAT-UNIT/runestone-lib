@@ -1,9 +1,10 @@
 # @ducat-unit/runestone
 
-TypeScript implementation of the Bitcoin Runestone protocol used by DUCAT packages.
+TypeScript implementation of the Bitcoin Runestone protocol used by DUCAT
+packages.
 
-This package intentionally focuses on runestone encoding/decoding primitives consumed by
-`core-ts`, `bootstrap-ts`, and `validator-ts`.
+This package intentionally focuses on runestone encoding/decoding primitives
+consumed by `core-ts`, `bootstrap-ts`, and `validator-ts`.
 
 ## Encode Runestone
 
@@ -56,8 +57,8 @@ const edictRunestone = encodeRunestone({
 
 ## Decode Runestone
 
-Decoding a runestone within a transaction is as simple as passing in
-the transaction data from Bitcoin Core RPC server.
+Decoding a runestone within a transaction is as simple as passing in the
+transaction data from Bitcoin Core RPC server.
 
 ```ts
 import {
